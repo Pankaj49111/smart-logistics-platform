@@ -1,0 +1,127 @@
+# ===========================
+# Smart Logistics Platform Git Ignore
+# Covers: Java (Maven + Spring Boot), React, IntelliJ, Eclipse, VS Code
+# ===========================
+
+### Java ###
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+hs_err_pid*
+replay_pid*
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+
+### Maven ###
+target/
+dependency-reduced-pom.xml
+release.properties
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+# Maven Wrapper
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+!/.mvn/wrapper/maven-wrapper.jar
+
+### Spring Boot ###
+logs/
+*.log
+spring.log
+*.pid
+*.seed
+*.tmp
+*.bak
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.ipr
+*.iml
+out/
+*.swp
+
+### Eclipse ###
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*.launch
+.settings/
+target/
+
+### VS Code ###
+.vscode/
+.history/
+*.code-workspace
+
+### React / Node ###
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.parcel-cache/
+frontend/.eslintcache
+frontend/.next/
+frontend/.turbo/
+frontend/.vercel/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+### Logs ###
+*.log
+logs/
+log/
+debug.log
+
+### OS Files ###
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+### Environment / Secrets ###
+.env
+.env.local
+.env.*.local
+*.env
+*.key
+*.pem
+*.crt
+*.csr
+*.p12
+*.jks
+*.keystore
+
+### Misc ###
+*.bak
+*.tmp
+*.swp
+*.swo
+*.orig
+*.rej
+*.class
+
+### Build tools ###
+dist/
+build/
+coverage/
+.cache/
+.gradle/
+.gradle-build/
+.gradle-cache/
+
+### Docker ###
+*.pid
+docker-compose.override.yml

@@ -123,7 +123,7 @@ services:
       - "8080:8080"
     depends_on:
       - discovery-server
-      - auth-service
+#      - auth-service
     environment:
       - SPRING_APPLICATION_NAME=gateway-service
       - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
@@ -144,6 +144,10 @@ services:
     depends_on:
       - postgres
       - kafka
+      - config-server
+      - discovery-server
+    networks:
+      - smart-network
 
   # --------------------------------------------------------------------
   # 🚚 Shipment Service

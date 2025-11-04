@@ -123,11 +123,21 @@ services:
       - "8080:8080"
     depends_on:
       - discovery-server
-#      - auth-service
+      - config-server
     environment:
-      - SPRING_APPLICATION_NAME=gateway-service
-      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_APPLICATION_NAME: gateway-service
+
+      # IMPORTANT → Eureka is inside Docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+
+      # OPTIONAL → Use config server if needed now or later
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888/
+
+    # ✅ This is the critical fix
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
     networks:
       - smart-network
 

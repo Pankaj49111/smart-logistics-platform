@@ -2,11 +2,11 @@ server:
   port: 8081
 
 spring:
-  config:
-    import: optional:configserver:http://config-server:8888/
+  application:
+    name: auth-service
 
   datasource:
-    url: jdbc:postgresql://postgres:5432/authdb
+    url: jdbc:postgresql://localhost:5432/authdb
     username: authuser
     password: authpass
     driver-class-name: org.postgresql.Driver
@@ -15,26 +15,15 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-kafka:
-  bootstrap-servers: kafka:9092
-
-application:
-  name: auth-service
-
 eureka:
   client:
+    register-with-eureka: true
+    fetch-registry: true
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
   instance:
-    preferIpAddress: true
-
-jwt:
-  secret: smartlogistics-secret-key
-  expiration: 3600000
-
-jakarta.persistence.jdbc.url: jdbc:postgresql://postgres:5432/authdb
+    prefer-ip-address: true

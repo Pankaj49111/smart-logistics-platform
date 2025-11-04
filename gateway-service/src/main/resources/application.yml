@@ -15,7 +15,7 @@ spring:
           lower-case-service-id: true
       routes:
         - id: auth-service
-          uri: lb://auth-service
+          uri: http://172.21.96.1:8081
           predicates:
             - Path=/auth/**
         - id: shipment-service

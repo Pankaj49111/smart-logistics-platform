@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class User {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -20,6 +21,8 @@ public class User {
   @Column(nullable = false)
   private String password;
 
-  private String role;
-  private boolean active;
+  private String role; // e.g., ADMIN, DRIVER, MANAGER
+
+  @Column(nullable = false)
+  private boolean active = true;
 }

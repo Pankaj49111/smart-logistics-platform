@@ -1,12 +1,13 @@
 package com.smartlogistics.auth.controller;
 
+import com.smartlogistics.auth.entity.LoginRequest;
 import com.smartlogistics.auth.entity.User;
 import com.smartlogistics.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -17,8 +18,13 @@ public class AuthController {
     return authService.register(user);
   }
 
+  @PostMapping("/login")
+  public String login(@RequestBody LoginRequest loginRequest) {
+    return authService.login(loginRequest.getUsername(), loginRequest.getPassword());
+  }
+
   @GetMapping("/health")
   public String health() {
-    return "Auth Service is running!";
+    return "Auth Service is running ✅";
   }
 }

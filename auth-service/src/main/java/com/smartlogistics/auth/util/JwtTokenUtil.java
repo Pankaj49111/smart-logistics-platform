@@ -4,13 +4,14 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenUtil {
 
-  private static final String SECRET =
-      "smartlogistics-secret-key-smartlogistics-secret-key"; // min 32 chars
+  @Value("${jwt.secret}")
+  private String SECRET;
 
   private Key getSigningKey() {
     return Keys.hmacShaKeyFor(SECRET.getBytes());

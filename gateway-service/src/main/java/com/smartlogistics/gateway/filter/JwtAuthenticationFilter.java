@@ -4,6 +4,7 @@ import com.smartlogistics.gateway.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -19,22 +20,31 @@ public class JwtAuthenticationFilter implements WebFilter {
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
     ServerHttpRequest request = exchange.getRequest();
+    String path = request.getURI().getPath();
+
+    System.out.println("🔍 [JWT Filter] Path: " + path);
+    System.out.println(
+        "🔍 [JWT Filter] Incoming Authorization Header: " +
+            request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
 
     // Skip public endpoints
-    if (request.getURI().getPath().contains("/auth")
-        || request.getURI().getPath().contains("/actuator")) {
+    if (path.startsWith("/auth") || path.contains("/actuator")) {
       return chain.filter(exchange);
     }
 
     String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
+      System.out.println("❌ [JWT Filter] Missing or invalid Authorization header");
+      exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
       return exchange.getResponse().setComplete();
     }
 
     String token = authHeader.substring(7);
-    if (!jwtUtil.isTokenValid(token)) {
-      exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
+    boolean valid = jwtUtil.isTokenValid(token);
+
+    if (!valid) {
+      System.out.println("❌ [JWT Filter] Token validation failed!");
+      exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
       return exchange.getResponse().setComplete();
     }
 
@@ -42,14 +52,10 @@ public class JwtAuthenticationFilter implements WebFilter {
     String username = claims.getSubject();
     String role = claims.get("role", String.class);
 
-    // Forward user info downstream as headers
-    ServerHttpRequest modifiedRequest =
-        exchange
-            .getRequest()
-            .mutate()
-            .header("X-User-Name", username)
-            .header("X-User-Role", role)
-            .build();
+    ServerHttpRequest modifiedRequest = request.mutate()
+        .header("X-User-Name", username)
+        .header("X-User-Role", role)
+        .build();
 
     return chain.filter(exchange.mutate().request(modifiedRequest).build());
   }

@@ -127,14 +127,9 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_APPLICATION_NAME: gateway-service
-
-      # IMPORTANT → Eureka is inside Docker
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
-
-      # OPTIONAL → Use config server if needed now or later
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888/
-
-    # ✅ This is the critical fix
+      JWT_SECRET: smartlogistics-very-long-secret-key-1234567890!
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -161,6 +156,7 @@ services:
       SPRING_DATASOURCE_USERNAME: authuser
       SPRING_DATASOURCE_PASSWORD: authpass
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      JWT_SECRET: smartlogistics-very-long-secret-key-1234567890!
     depends_on:
       - config-server
       - discovery-server
@@ -173,15 +169,29 @@ services:
   # 🚚 Shipment Service
   # --------------------------------------------------------------------
   shipment-service:
-    build: ./shipment-service
+    build:
+      context: ./shipment-service
+      dockerfile: Dockerfile
     container_name: shipment-service
+    image: smartlogistics/shipment-service
     ports:
       - "8082:8082"
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      SPRING_APPLICATION_NAME: shipment-service
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/shipmentdb
+      SPRING_DATASOURCE_USERNAME: shipmentuser
+      SPRING_DATASOURCE_PASSWORD: shipmentpass
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
     depends_on:
-      - kafka
-      - postgres
+      - config-server
+      - discovery-server
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - smart-network
 
   # --------------------------------------------------------------------
   # 🚛 Fleet Service

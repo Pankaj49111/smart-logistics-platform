@@ -37,5 +37,7 @@ management:
     web:
       exposure:
         include: health,info
+
 jwt:
-  secret: ${JWT_SECRET:supersecurekeysmartlogistics123456789}
+  secret: ${JWT_SECRET:smartlogistics-secret-key}
+  expiration: 3600000

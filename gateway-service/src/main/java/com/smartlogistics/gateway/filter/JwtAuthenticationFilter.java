@@ -24,8 +24,8 @@ public class JwtAuthenticationFilter implements WebFilter {
 
     System.out.println("🔍 [JWT Filter] Path: " + path);
     System.out.println(
-        "🔍 [JWT Filter] Incoming Authorization Header: " +
-            request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
+        "🔍 [JWT Filter] Incoming Authorization Header: "
+            + request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
 
     // Skip public endpoints
     if (path.startsWith("/auth") || path.contains("/actuator")) {
@@ -52,11 +52,13 @@ public class JwtAuthenticationFilter implements WebFilter {
     String username = claims.getSubject();
     String role = claims.get("role", String.class);
 
-    ServerHttpRequest modifiedRequest = request.mutate()
-        .header("X-User-Name", username)
-        .header("X-User-Role", role)
-        .build();
+    System.out.println(
+        "✅ [JWT Filter] Token accepted for user: " + username + " with role: " + role);
 
+    ServerHttpRequest modifiedRequest =
+        request.mutate().header("X-User-Name", username).header("X-User-Role", role).build();
+
+    exchange.getResponse().getHeaders().add("X-Gateway-Debug", "Token accepted");
     return chain.filter(exchange.mutate().request(modifiedRequest).build());
   }
 }

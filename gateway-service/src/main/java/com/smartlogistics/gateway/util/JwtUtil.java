@@ -27,18 +27,19 @@ public class JwtUtil {
         .getBody();
   }
 
-    public boolean isTokenValid(String token) {
-        try {
-            Claims claims = extractAllClaims(token);
-            System.out.println("✅ [JWT] Token valid until " + claims.getExpiration());
-            return !claims.getExpiration().before(new Date());
-        } catch (Exception e) {
-            System.out.println("❌ [JWT] Validation failed: " + e.getClass().getSimpleName() + " - " + e.getMessage());
-            return false;
-        }
+  public boolean isTokenValid(String token) {
+    try {
+      Claims claims = extractAllClaims(token);
+      System.out.println("✅ [JWT] Token valid until " + claims.getExpiration());
+      return !claims.getExpiration().before(new Date());
+    } catch (Exception e) {
+      System.out.println(
+          "❌ [JWT] Validation failed: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+      return false;
     }
+  }
 
-    public String getUsername(String token) {
+  public String getUsername(String token) {
     return extractAllClaims(token).getSubject();
   }
 

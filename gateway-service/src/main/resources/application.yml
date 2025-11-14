@@ -19,7 +19,7 @@ spring:
           predicates:
             - Path=/auth/**
         - id: shipment-service
-          uri: lb://shipment-service
+          uri: http://shipment-service:8082
           predicates:
             - Path=/shipments/**
       default-filters:

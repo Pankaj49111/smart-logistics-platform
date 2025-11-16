@@ -22,6 +22,10 @@ spring:
           uri: http://shipment-service:8082
           predicates:
             - Path=/shipments/**
+        - id: ai-assistant-service
+          uri: lb://ai-assistant-service
+          predicates:
+            - Path=/ai/**
       default-filters:
         - AddResponseHeader=X-Gateway, SmartLogistics
 

@@ -220,12 +220,16 @@ services:
     build: ./ai-assistant-service
     container_name: ai-assistant-service
     ports:
-      - "8084:8084"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
+      - "8087:8087"
     depends_on:
-      - kafka
-      - zipkin
+      - gateway-service
+      - discovery-server
+      - config-server
+    networks:
+      - smart-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
 
   # --------------------------------------------------------------------
   # 🔔 Notification Service

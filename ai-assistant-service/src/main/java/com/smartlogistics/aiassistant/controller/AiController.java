@@ -1,32 +1,49 @@
 package com.smartlogistics.aiassistant.controller;
 
-import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.ollama.OllamaChatModel;
+import com.smartlogistics.aiassistant.dto.ChatRequest;
+import com.smartlogistics.aiassistant.dto.ChatResponse;
+import com.smartlogistics.aiassistant.service.AiPromptService;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/ai")
 public class AiController {
 
-    private final OllamaChatModel chatModel;
+  private final AiPromptService ai;
 
-    public AiController(OllamaChatModel chatModel) {
-        this.chatModel = chatModel;
-    }
+  public AiController(AiPromptService ai) {
+    this.ai = ai;
+  }
 
-    @PostMapping("/chat")
-    public ChatResponse chat(@RequestBody String message) {
-        return chatModel.call(new Prompt(message));
-    }
+  @PostMapping("/chat")
+  public Mono<ChatResponse> chat(@RequestBody ChatRequest req) {
+    long start = System.currentTimeMillis();
+    return ai.singleReply(req.message())
+        .map(reply -> new ChatResponse(reply, "ollama", System.currentTimeMillis() - start));
+  }
 
-    @PostMapping("/summarize")
-    public ChatResponse summarize(@RequestBody String text) {
-        return chatModel.call(new Prompt("Summarize this:\n\n" + text));
-    }
+  @PostMapping("/summarize")
+  public Mono<String> summarize(@RequestBody String text) {
+    String p = "Summarize the following text in 3 concise bullet points:\n\n" + text;
+    return ai.singleReply(p);
+  }
 
-    @PostMapping("/analyze")
-    public ChatResponse analyze(@RequestBody String event) {
-        return chatModel.call(new Prompt("Analyze this logistics event:\n\n" + event));
-    }
+  @PostMapping("/analyze")
+  public Mono<String> analyze(@RequestBody String event) {
+    String p = "Analyze the following and provide 3 insights:\n\n" + event;
+    return ai.singleReply(p);
+  }
+
+  @PostMapping("/explain")
+  public Mono<String> explain(@RequestBody String content) {
+    String p = "Explain for a senior Java engineer (root cause + fix) this content:\n\n" + content;
+    return ai.singleReply(p);
+  }
+
+  @PostMapping("/keywords")
+  public Mono<String> keywords(@RequestBody String text) {
+    String p = "Extract up to 8 keywords (comma separated) from this text:\n\n" + text;
+    return ai.singleReply(p);
+  }
 }
